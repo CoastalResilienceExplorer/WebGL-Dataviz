@@ -1,0 +1,9 @@
+docker build -t webgl-processing .
+
+docker run \
+    -it \
+    -v /Users/chlowrie/Downloads/rp_100:/data \
+    -v /Users/chlowrie/Desktop/UCSC/webgl-dev/src/data:/data/processed \
+    -v $PWD:/app \
+    --entrypoint bash \
+    webgl-processing
