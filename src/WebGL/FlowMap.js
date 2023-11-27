@@ -17,27 +17,32 @@ import windData from '../data/metadata_t0.json';
 //     // 0.1: '#66c2a5',
 //     0.1: '#d53e4f'
 // };
-// const defaultRampColors = {
-//     0.0: '#3288bd00', // Hide 0 flow pixels
-//     0.1: '#66c2a5',
-//     0.2: '#abdda4',
-//     0.3: '#e6f598',
-//     0.4: '#fee08b',
-//     0.5: '#fdae61',
-//     0.6: '#f46d43',
-//     1.0: '#d53e4f00' // Transparency HACK
-// };
-
 const defaultRampColors = {
     0.0: '#3288bd00', // Hide 0 flow pixels
+    0.01: '#3288bd00', // Hide 0 flow pixels
     0.1: '#66c2a5',
-    0.2: '#e6f598',
-    0.3: '#d53e4f',
-    0.4: '#d53e4f',
-    // 0.5: '#fdae61',
-    // 0.6: '#d53e4f',
+    0.2: '#abdda4',
+    0.3: '#e6f598',
+    0.4: '#fee08b',
+    0.5: '#fdae61',
+    0.6: '#f46d43',
+    0.7: '#f46d43',
+    0.8: '#f46d43',
+    0.9: '#f46d43',
     1.0: '#d53e4f00' // Transparency HACK
 };
+
+// const defaultRampColors = {
+//     0.0: '#3288bd00', // Hide 0 flow pixels
+//     // 0.05: '#3288bd', // Hide 0 flow pixels
+//     0.1: '#66c2a5',
+//     0.2: '#e6f598',
+//     0.3: '#d53e4f',
+//     0.4: '#d53e4f',
+//     // 0.5: '#fdae61',
+//     // 0.6: '#d53e4f',
+//     1.0: '#d53e4f00' // Transparency HACK
+// };
 
 
 
@@ -82,8 +87,8 @@ export class WindGL {
     constructor(gl) {
         this.gl = gl;
 
-        this.fadeOpacity = 0.999; // how fast the particle trails fade on each frame
-        this.speedFactor = 3.0; // how fast the particles move
+        this.fadeOpacity = 0.9999999; // how fast the particle trails fade on each frame
+        this.speedFactor = 6.0; // how fast the particles move
         this.dropRate = 0.003; // how often the particles move to a random place
         this.dropRateBump = 0.001; // drop rate increase relative to individual particle speed
 
@@ -101,6 +106,7 @@ export class WindGL {
         console.log(windData)
         this.windData = windData
         image.then(r => {
+            console.log(r)
             this.windData.image = r;
             this.windTexture = util.createTexture(this.gl, this.gl.LINEAR, this.windData.image);
         })

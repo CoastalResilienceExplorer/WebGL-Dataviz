@@ -22,19 +22,24 @@ const init_viewport = {
 //     pitch: 0
 // }
 
+// Flip these around to play with orientation
 const coords = [
-    [-64.73374196267778, 17.77621879686222],
     [-64.74840398683924, 17.77621879686222],
-    [-64.74840398683924, 17.783984953353503],
-    [-64.73374196267778, 17.783984953353503]
+    [-64.73374196267778, 17.77621879686222],
+    [-64.73374196267778, 17.783984953353503],
+    [-64.74840398683924, 17.783984953353503]
 ]
+
+
+const init_style = 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=MaFnSq3YV246XmAmaMFo'
+// const init_style = 'https://api.maptiler.com/maps/backdrop/style.json?key=MaFnSq3YV246XmAmaMFo'
 
 export function Map(canvasRef) {
     const mapContainer = useRef(null);
     const [map, setMap] = useState(null);
     const [mapLoaded, setMapLoaded] = useState(false);
     const [viewport, setViewport] = useState(init_viewport);
-    const [style, setStyle] = useState('https://api.maptiler.com/maps/satellite/style.json?key=MaFnSq3YV246XmAmaMFo');
+    const [style, setStyle] = useState(init_style);
 
     function flyToViewport(viewport) {
         const center = [viewport.longitude, viewport.latitude]

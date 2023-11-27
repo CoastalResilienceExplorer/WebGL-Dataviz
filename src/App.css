@@ -1,6 +1,11 @@
 .map-container {
-  height: 100vh;
-  width: 100vw;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+  /* background-color: white; */
+  z-index: 0;
 }
 
 /* .base {
@@ -13,6 +18,16 @@
 }  */
 
 .flowmap {
-  width: 649px;
-  height: 1459px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+  /* background-color: white;  */
+  z-index: 1;
+  /* transform: scale(-1, 1); */
 }
+
+/* .flowmap2 {
+  transform: scale(-1, 1);
+} */
