@@ -42,7 +42,7 @@ const defaultRampColors = {
 //     // 0.5: '#fdae61',
 //     // 0.6: '#d53e4f',
 //     1.0: '#d53e4f00' // Transparency HACK
-// };
+// };  
 
 
 
