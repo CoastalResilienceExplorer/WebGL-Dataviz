@@ -14,32 +14,32 @@ function App() {
 
   useEffect(() => { 
 
-    const gl = windCanvasRef.current.getContext('webgl', { antialiasing: false});
-    windCanvasRef.current.width = 649*res
-    windCanvasRef.current.height = 1459*res
-    wind.current = new WindGL(gl)
+    // const gl = windCanvasRef.current.getContext('webgl', { antialiasing: false});
+    // windCanvasRef.current.width = 649*res
+    // windCanvasRef.current.height = 1459*res
+    // wind.current = new WindGL(gl)
 
-    // setMesh(new MeshGL())
+    setMesh(new MeshGL())
   }, [])
 
-  useEffect(() => {
-    wind.current.numParticles = 1000000
-    function frame() {
-      if (wind.current.windData) {
-        wind.current.draw();
-      }
-      requestAnimationFrame(frame);
-    }
-    frame();
-  }, [wind]) 
+  // useEffect(() => {
+  //   wind.current.numParticles = 1000000
+  //   function frame() {
+  //     if (wind.current.windData) {
+  //       wind.current.draw();
+  //     }
+  //     requestAnimationFrame(frame);
+  //   }
+  //   frame();
+  // }, [wind]) 
 
   return (
     <>
-      <canvas className="flowmap2" id="flowmap" ref={windCanvasRef} />
+      {/* <canvas className="flowmap2" id="flowmap" ref={windCanvasRef} /> */}
       {/* <canvas id="mesh-canvas" ref={meshCanvasRef} /> */}
-      {/* <Map mesh={mesh}/> */}
-      <Map/>
-      {/* <video src={'/animation.mp4'} id='video' muted="muted" autoPlay={true} loop={true} playsInline={true} width={649} height={1459}></video> */}
+      {/* <Map/> */}
+      <Map mesh={mesh}/>
+      <video src={'/animation.mp4'} id='video' muted="muted" autoPlay={true} loop={true} playsInline={true} width={649} height={1459}></video>
     </>
   )
 }

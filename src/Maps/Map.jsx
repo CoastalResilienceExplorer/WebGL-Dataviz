@@ -85,21 +85,21 @@ export function Map({ mesh }) {
             });
 
             setMapLoaded(true);
-            map.map.addSource('canvas-source', {
-                type: 'canvas',
-                canvas: 'flowmap',
-                coordinates: coords,
-                // Set to true if the canvas source is animated. If the canvas is static, animate should be set to false to improve performance.
-                animate: true
-            });
+            // map.map.addSource('canvas-source', {
+            //     type: 'canvas',
+            //     canvas: 'flowmap',
+            //     coordinates: coords,
+            //     // Set to true if the canvas source is animated. If the canvas is static, animate should be set to false to improve performance.
+            //     animate: true
+            // });
 
-            map.map.addLayer({
-                id: 'canvas-layer',
-                type: 'raster',
-                source: 'canvas-source'
-            });
+            // map.map.addLayer({
+            //     id: 'canvas-layer',
+            //     type: 'raster',
+            //     source: 'canvas-source'
+            // });
 
-            // map.map.addLayer(mesh.get_layer())
+            map.map.addLayer(mesh.get_layer())
 
             // map.map.addSource('canvas-mesh-source', {
             //     type: 'canvas',
@@ -114,10 +114,10 @@ export function Map({ mesh }) {
             //     type: 'raster',
             //     source: 'canvas-mesh-source'
             // });
-            // map.map.on('moveend', () => setTimeout(() => {
-            //     map.map.triggerRepaint()
-            //     console.log('repaint')
-            // }, 1000))
+            map.map.on('moveend', () => setTimeout(() => {
+                map.map.triggerRepaint()
+                console.log('repaint')
+            }, 1000))
 
             console.log(map.map)
         });
