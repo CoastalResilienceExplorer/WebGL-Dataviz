@@ -83,7 +83,7 @@ export class MeshGL {
         this.meshData.image = r;
         this.nVerts = (r.width - 1) * (r.height - 1)
         this.indices = [];
-        const step = 2
+        const step = 0.5
         for (let i = 0; i < r.width - 1; i += step) {
             for (let j = 0; j < r.height - 1; j += step) {
                 this.indices.push(i * 1.0)

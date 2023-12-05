@@ -1,5 +1,3 @@
-from pydelatin import Delatin
-import pydelatin
 import xarray as xr
 import rioxarray as rxr
 from pyproj import Transformer
@@ -95,8 +93,10 @@ def convert_xb_zs_to_png(folder='/data/processed/zs'):
         print(z.min())
         print(z.max())
         print(z.to_numpy().shape)
+        z_with_rand = z.to_numpy() + (np.random.rand(*z.to_numpy().shape)*100).astype(np.uint8)
 
-        z_scaled, z_min, z_max = scale_array(z.to_numpy())
+        z_scaled, z_min, z_max = scale_array(z_with_rand)
+        # z_scaled, z_min, z_max = scale_array(z.to_numpy())
         metadata = {
             "zMin": float(z_min),
             "zMax": float(z_max),

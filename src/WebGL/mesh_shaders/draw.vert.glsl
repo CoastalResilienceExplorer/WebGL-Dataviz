@@ -43,7 +43,7 @@ void main() {
 
     // gl_PointSize = 3.0;
     // gl_Position = vec4(2.0 * v_particle_pos.x - 1.0, 1.0 - 2.0 * v_particle_pos.y, 0, 1);
-    gl_PointSize = 10.0;
+    gl_PointSize = 5.0;
     // gl_Position = vec4(
     //     0.2,0.2,0,1);
     gl_Position = u_matrix * vec4(
