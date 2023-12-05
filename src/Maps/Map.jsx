@@ -8,10 +8,10 @@ import { getViewport } from "./utils/viewportUtils";
 const transitionDuration = 500;
 
 const init_viewport = {
-    center: [-64.74988233262428, 17.7853676657609],
-    zoom: 13,
-    bearing: 0,
-    pitch: 0
+    center: [-64.73987541127474, 17.778198969756758],
+    zoom: 16.196739524766885,
+    bearing: -128.82138560926762,
+    pitch: 80.99999999999999
 }
 
 // const init_viewport = {
@@ -34,7 +34,7 @@ const coords = [
 const init_style = 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=MaFnSq3YV246XmAmaMFo'
 // const init_style = 'https://api.maptiler.com/maps/backdrop/style.json?key=MaFnSq3YV246XmAmaMFo'
 
-export function Map(canvasRef) {
+export function Map({ mesh }) {
     const mapContainer = useRef(null);
     const [map, setMap] = useState(null);
     const [mapLoaded, setMapLoaded] = useState(false);
@@ -98,12 +98,38 @@ export function Map(canvasRef) {
                 type: 'raster',
                 source: 'canvas-source'
             });
+
+            // map.map.addLayer(mesh.get_layer())
+
+            // map.map.addSource('canvas-mesh-source', {
+            //     type: 'canvas',
+            //     canvas: 'mesh-canvas',
+            //     coordinates: coords,
+            //     // Set to true if the canvas source is animated. If the canvas is static, animate should be set to false to improve performance.
+            //     animate: true
+            // });
+
+            // map.map.addLayer({
+            //     id: 'canvas-mesh-layer',
+            //     type: 'raster',
+            //     source: 'canvas-mesh-source'
+            // });
+            // map.map.on('moveend', () => setTimeout(() => {
+            //     map.map.triggerRepaint()
+            //     console.log('repaint')
+            // }, 1000))
+
+            console.log(map.map)
         });
         map.map.on("move", () => {
             setViewport(getViewport(map.map));
         });
         console.log(map.map)
     }, [map]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        console.log(viewport)
+    }, [viewport])
 
     return <div
         ref={mapContainer}

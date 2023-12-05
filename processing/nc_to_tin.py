@@ -3,11 +3,10 @@ import pydelatin
 import xarray as xr
 import rioxarray as rxr
 from pyproj import Transformer
-import math
-from scipy.spatial import Delaunay
 import numpy as np
 import json
 import matplotlib.image
+import os
 
 
 def scale_array(arr, max=255, dtype=np.uint8):
@@ -17,7 +16,7 @@ def scale_array(arr, max=255, dtype=np.uint8):
 
     arr_max = np.max(arr)
     arr = (arr / arr_max * max).astype(dtype)
-    assert np.max(arr) == max, f"{np.max(arr)} != {max}"
+    # assert np.max(arr) == max, f"{np.max(arr)} != {max}"
     assert np.min(arr) == 0, f"{np.min(arr)} != {0}"
     return arr, arr_min, original_max
 
@@ -38,7 +37,21 @@ def get_bounds(ds):
     return {"xmin": xmin, "xmax": xmax, "ymin": ymin, "ymax": ymax}
 
 
-def convert_xb_to_png():
+def generate_video(folder):
+    import os, subprocess, glob
+    os.chdir(folder)
+    subprocess.call([
+        'ffmpeg', 
+        '-framerate', '8', 
+        '-pattern_type', 'glob', 
+        '-i', '*.png', 
+        '-r', '10', 
+        '-pix_fmt', 'yuv420p',
+        '-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
+        'animation.mp4'
+    ])
+
+def convert_xb_uv_to_png():
     for t in range(9):
         print(t)
         ds = xr.open_dataset("/data/xboutput.nc").isel(meantime=t).squeeze()
@@ -72,18 +85,57 @@ def convert_xb_to_png():
         break
         continue
 
+def convert_xb_zs_to_png(folder='/data/processed/zs'):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    for t in range(9):
+        print(t)
+        ds = xr.open_dataset("/data/xboutput.nc").isel(meantime=t).squeeze()
+        z = ds.zs_max
+        print(z.min())
+        print(z.max())
+        print(z.to_numpy().shape)
 
-def create_initial_particles(res=100):
-    arrs = [scale_array(np.random.rand(res, res))[0] for _ in range(4)]
-    print([a.shape for a in arrs])
-    x = np.moveaxis(np.stack(arrs, axis=0), 0, -1).copy(order='C')
-    print(x)
-    print(x.shape)
-    matplotlib.image.imsave(
-        f"/data/processed/random_start.png",
-        x,
-    )
+        z_scaled, z_min, z_max = scale_array(z.to_numpy())
+        metadata = {
+            "zMin": float(z_min),
+            "zMax": float(z_max),
+            "shape": [z_scaled.shape[1], z_scaled.shape[0]],
+            "bounds": get_bounds(ds),
+        }
+        print(metadata)
+        with open(os.path.join(folder, f"metadata_t{t}_zs.json"), "w") as f:
+            f.write(json.dumps(metadata, indent=4))
+        output_png = np.moveaxis(
+            np.stack(
+                [
+                    z_scaled, 
+                    np.zeros(z_scaled.shape).astype(np.uint8), 
+                    np.zeros(z_scaled.shape).astype(np.uint8), 
+                    np.ones(z_scaled.shape).astype(np.uint8)*255], axis=0
+            ),
+            0,
+            -1,
+        )
+        # output_png = np.moveaxis(
+        #     np.stack(
+        #         [
+        #             (np.random.rand(*z_scaled.shape)*255).astype(np.uint8), 
+        #             np.zeros(z_scaled.shape).astype(np.uint8), 
+        #             np.zeros(z_scaled.shape).astype(np.uint8), 
+        #             np.ones(z_scaled.shape).astype(np.uint8)*255], axis=0
+        #     ),
+        #     0,
+        #     -1,
+        # )
+        matplotlib.image.imsave(
+            os.path.join(folder, f"img_t{t}_zs.png"),
+            output_png.copy(order='C'),
+        )
+    generate_video(folder)
+    
 
 
-convert_xb_to_png()
-# create_initial_particles()
+# convert_xb_uv_to_png()
+convert_xb_zs_to_png()
+

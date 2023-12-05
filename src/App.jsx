@@ -4,21 +4,26 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Map } from './Maps/Map.jsx'
 import { WindGL } from './WebGL/FlowMap.js'
+import { MeshGL } from './WebGL/Mesh'
 const res = 5
 
 function App() {
   const wind = useRef(null)
-  const canvasRef = useRef(null)
+  const [mesh, setMesh] = useState(null)
+  const windCanvasRef = useRef(null)
 
-  useEffect(() => {
-    const gl = canvasRef.current.getContext('webgl', { antialiasing: false});
-    canvasRef.current.width = 649*res
-    canvasRef.current.height = 1459*res
+  useEffect(() => { 
+
+    const gl = windCanvasRef.current.getContext('webgl', { antialiasing: false});
+    windCanvasRef.current.width = 649*res
+    windCanvasRef.current.height = 1459*res
     wind.current = new WindGL(gl)
+
+    // setMesh(new MeshGL())
   }, [])
 
   useEffect(() => {
-    wind.current.numParticles = 50000
+    wind.current.numParticles = 1000000
     function frame() {
       if (wind.current.windData) {
         wind.current.draw();
@@ -26,12 +31,15 @@ function App() {
       requestAnimationFrame(frame);
     }
     frame();
-  }, [wind])
+  }, [wind]) 
 
   return (
     <>
-      <canvas className="flowmap2" id="flowmap" ref={canvasRef} />
-      <Map />
+      <canvas className="flowmap2" id="flowmap" ref={windCanvasRef} />
+      {/* <canvas id="mesh-canvas" ref={meshCanvasRef} /> */}
+      {/* <Map mesh={mesh}/> */}
+      <Map/>
+      {/* <video src={'/animation.mp4'} id='video' muted="muted" autoPlay={true} loop={true} playsInline={true} width={649} height={1459}></video> */}
     </>
   )
 }

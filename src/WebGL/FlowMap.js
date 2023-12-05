@@ -17,53 +17,32 @@ import windData from '../data/metadata_t0.json';
 //     // 0.1: '#66c2a5',
 //     0.1: '#d53e4f'
 // };
-const defaultRampColors = {
-    0.0: '#3288bd00', // Hide 0 flow pixels
-    0.01: '#3288bd00', // Hide 0 flow pixels
-    0.1: '#66c2a5',
-    0.2: '#abdda4',
-    0.3: '#e6f598',
-    0.4: '#fee08b',
-    0.5: '#fdae61',
-    0.6: '#f46d43',
-    0.7: '#f46d43',
-    0.8: '#f46d43',
-    0.9: '#f46d43',
-    1.0: '#d53e4f00' // Transparency HACK
-};
-
 // const defaultRampColors = {
 //     0.0: '#3288bd00', // Hide 0 flow pixels
-//     // 0.05: '#3288bd', // Hide 0 flow pixels
+//     0.01: '#3288bd00', // Hide 0 flow pixels
 //     0.1: '#66c2a5',
-//     0.2: '#e6f598',
-//     0.3: '#d53e4f',
-//     0.4: '#d53e4f',
-//     // 0.5: '#fdae61',
-//     // 0.6: '#d53e4f',
+//     0.2: '#abdda4',
+//     0.3: '#e6f598',
+//     0.4: '#fee08b',
+//     0.5: '#fdae61',
+//     0.6: '#f46d43',
+//     0.7: '#f46d43',
+//     0.8: '#f46d43',
+//     0.9: '#f46d43',
 //     1.0: '#d53e4f00' // Transparency HACK
-// };  
+// };
 
-
-
-const convertImageToUint8Array = async imageUri => {
-    try {
-        const blobResponse = await fetch(imageUri, { responseType: 'blob' });
-        const blob = await blobResponse.blob();
-        const arrayBuffer = await new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                resolve(reader.result);
-            };
-            reader.readAsArrayBuffer(blob);
-        });
-        console.log(arrayBuffer)
-        return new Uint8Array(arrayBuffer);
-    } catch (error) {
-        console.log('Error converting image:', error);
-        throw error;
-    }
-};
+const defaultRampColors = {
+    0.0: '#3288bd00', // Hide 0 flow pixels
+    // 0.05: '#3288bd', // Hide 0 flow pixels
+    0.1: '#66c2a5',
+    0.2: '#e6f598',
+    0.3: '#d53e4f',
+    0.4: '#d53e4f',
+    // 0.5: '#fdae61',
+    // 0.6: '#d53e4f',
+    1.0: '#d53e4f00' // Transparency HACK
+};  
 
 
 function loadImage(url) {

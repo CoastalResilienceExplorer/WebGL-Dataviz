@@ -28,6 +28,21 @@
   /* transform: scale(-1, 1); */
 }
 
+#video {
+  visibility: hidden;
+}
+
+/* #mesh-canvas {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+  background-color: black; 
+  z-index: 1;
+  transform: scale(-1, 1);
+} */
+
 /* .flowmap2 {
   transform: scale(-1, 1);
 } */
