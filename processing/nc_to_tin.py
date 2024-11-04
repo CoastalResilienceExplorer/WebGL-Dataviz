@@ -1,20 +1,20 @@
-from pydelatin import Delatin
-import pydelatin
 import xarray as xr
 import rioxarray as rxr
 from pyproj import Transformer
 import numpy as np
 import json
 import matplotlib.image
+import matplotlib.pyplot as plt
 import os
 
 
 def scale_array(arr, max=255, dtype=np.uint8):
-    arr_min = np.min(arr)
-    original_max = np.max(arr)
+    arr[arr > 5] = 5
+    arr_min = np.nanmin(arr)
+    original_max = np.nanmax(arr)
     arr = arr - arr_min
 
-    arr_max = np.max(arr)
+    arr_max = np.nanmax(arr)
     arr = (arr / arr_max * max).astype(dtype)
     # assert np.max(arr) == max, f"{np.max(arr)} != {max}"
     assert np.min(arr) == 0, f"{np.min(arr)} != {0}"
@@ -22,39 +22,41 @@ def scale_array(arr, max=255, dtype=np.uint8):
 
 
 def get_bounds(ds):
-    globalx_flat = ds.globalx[0].values.flatten()
-    globaly_flat = ds.globaly[0].values.flatten()
-
-    # Calculate the extents (min and max values) of the flattened globalx and globaly
-    xmin = np.min(globalx_flat)
-    xmax = np.max(globalx_flat)
-    ymin = np.min(globaly_flat)
-    ymax = np.max(globaly_flat)
-
-    transformer = Transformer.from_crs("EPSG:32620", "EPSG:4326")
-    ymin, xmin = transformer.transform(xmin, ymin)
-    ymax, xmax = transformer.transform(xmax, ymax)
-    return {"xmin": xmin, "xmax": xmax, "ymin": ymin, "ymax": ymax}
+    bounds = ds.rio.bounds()
+    return {"xmin": bounds[0], "xmax": bounds[2], "ymin": bounds[1], "ymax": bounds[3]}
 
 
 def generate_video(folder):
     import os, subprocess, glob
+
     os.chdir(folder)
-    subprocess.call([
-        'ffmpeg', 
-        '-framerate', '8', 
-        '-pattern_type', 'glob', 
-        '-i', '*.png', 
-        '-r', '10', 
-        '-pix_fmt', 'yuv420p',
-        '-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
-        'animation.mp4'
-    ])
+    subprocess.call(
+        [
+            "ffmpeg",
+            "-framerate",
+            "8",
+            "-pattern_type",
+            "glob",
+            "-i",
+            "*.png",
+            "-r",
+            "10",
+            "-pix_fmt",
+            "yuv420p",
+            "-vf",
+            "pad=ceil(iw/2)*2:ceil(ih/2)*2",
+            "animation.mp4",
+        ]
+    )
+
 
 def convert_xb_uv_to_png():
     for t in range(9):
         print(t)
-        ds = xr.open_dataset("/data/xboutput.nc").isel(meantime=t).squeeze()
+        ds = xr.open_dataset("/data/combined.nc").isel(time=t).squeeze()
+        ds = ds.rio.write_crs("EPSG:32620")
+        ds = ds.rio.reproject("EPSG:4326")
+        ds = ds.fillna(0)
         u = ds.u_mean
         v = ds.v_mean
         u_scaled, u_min, u_max = scale_array(u.to_numpy())
@@ -71,27 +73,36 @@ def convert_xb_uv_to_png():
             f.write(json.dumps(metadata, indent=4))
         output_png = np.moveaxis(
             np.stack(
-                [u_scaled, v_scaled, np.zeros(u_scaled.shape).astype(np.uint8), np.ones(u_scaled.shape).astype(np.uint8)*255], axis=0
+                [
+                    u_scaled,
+                    v_scaled,
+                    np.zeros(u_scaled.shape).astype(np.uint8),
+                    np.ones(u_scaled.shape).astype(np.uint8) * 255,
+                ],
+                axis=0,
             ),
             0,
             -1,
         )
         matplotlib.image.imsave(
             f"/data/processed/img_t{t}.png",
-            output_png.copy(order='C'),
+            output_png.copy(order="C"),
         )
         # u1 = math.floor(u / 255)
         # print(u)
         break
         continue
 
-def convert_xb_zs_to_png(folder='/data/processed/zs'):
+
+def convert_xb_zs_to_png(folder="/data/processed/zs", xspacing=5, yspacing=5):
     if not os.path.exists(folder):
         os.makedirs(folder)
-    for t in range(9):
+    for t in range(10):
         print(t)
-        ds = xr.open_dataset("/data/xboutput.nc").isel(meantime=t).squeeze()
-        z = ds.zs_max
+        ds = xr.open_dataset("/data/test_xb.nc").isel(time=t).squeeze()
+        ds = ds.rio.write_crs("EPSG:32620")
+        ds = ds.rio.reproject("EPSG:4326")
+        z = ds.zs
         print(z.min())
         print(z.max())
         print(z.to_numpy().shape)
@@ -109,10 +120,12 @@ def convert_xb_zs_to_png(folder='/data/processed/zs'):
         output_png = np.moveaxis(
             np.stack(
                 [
-                    z_scaled, 
-                    np.zeros(z_scaled.shape).astype(np.uint8), 
-                    np.zeros(z_scaled.shape).astype(np.uint8), 
-                    np.ones(z_scaled.shape).astype(np.uint8)*255], axis=0
+                    z_scaled,
+                    np.zeros(z_scaled.shape).astype(np.uint8),
+                    np.zeros(z_scaled.shape).astype(np.uint8),
+                    np.ones(z_scaled.shape).astype(np.uint8) * 255,
+                ],
+                axis=0,
             ),
             0,
             -1,
@@ -120,9 +133,9 @@ def convert_xb_zs_to_png(folder='/data/processed/zs'):
         # output_png = np.moveaxis(
         #     np.stack(
         #         [
-        #             (np.random.rand(*z_scaled.shape)*255).astype(np.uint8), 
-        #             np.zeros(z_scaled.shape).astype(np.uint8), 
-        #             np.zeros(z_scaled.shape).astype(np.uint8), 
+        #             (np.random.rand(*z_scaled.shape)*255).astype(np.uint8),
+        #             np.zeros(z_scaled.shape).astype(np.uint8),
+        #             np.zeros(z_scaled.shape).astype(np.uint8),
         #             np.ones(z_scaled.shape).astype(np.uint8)*255], axis=0
         #     ),
         #     0,
@@ -130,12 +143,10 @@ def convert_xb_zs_to_png(folder='/data/processed/zs'):
         # )
         matplotlib.image.imsave(
             os.path.join(folder, f"img_t{t}_zs.png"),
-            output_png.copy(order='C'),
+            output_png.copy(order="C"),
         )
     generate_video(folder)
-    
 
 
-# convert_xb_uv_to_png()
-convert_xb_zs_to_png()
-
+convert_xb_uv_to_png()
+# ds = convert_xb_zs_to_png()

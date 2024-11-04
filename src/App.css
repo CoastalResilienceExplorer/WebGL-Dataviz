@@ -17,7 +17,7 @@
   background-color: white;
 }  */
 
-.flowmap {
+.flowmap2 {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -30,6 +30,16 @@
 
 #video {
   visibility: hidden;
+}
+
+#flowmap {
+  visibility: hidden;
+}
+
+.test-img {
+  height: 487px;
+  width: 960px;
+  /* transform: rotate(90deg) scaleY(-1); */
 }
 
 /* #mesh-canvas {

@@ -2,16 +2,18 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import maplibregl from "maplibre-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
 import { getViewport } from "./utils/viewportUtils";
+import windData from '../data/zs/metadata_t0_zs.json';
+
 // import { MapInterface, ViewportParams } from "./types";
 // import { highlightLayer } from './useCustomMesh.js'
 
 const transitionDuration = 500;
 
 const init_viewport = {
-    center: [-64.73987541127474, 17.778198969756758],
-    zoom: 16.196739524766885,
-    bearing: -128.82138560926762,
-    pitch: 80.99999999999999
+    center: [-64.71713843185205, 17.755074238874826],
+    zoom: 12.366225749316763, 
+    bearing: 0, 
+    pitch: 0
 }
 
 // const init_viewport = {
@@ -24,11 +26,13 @@ const init_viewport = {
 
 // Flip these around to play with orientation
 const coords = [
-    [-64.74840398683924, 17.77621879686222],
-    [-64.73374196267778, 17.77621879686222],
-    [-64.73374196267778, 17.783984953353503],
-    [-64.74840398683924, 17.783984953353503]
+    [windData.bounds.xmin, windData.bounds.ymax],
+    [windData.bounds.xmax, windData.bounds.ymax],
+    [windData.bounds.xmax, windData.bounds.ymin],
+    [windData.bounds.xmin, windData.bounds.ymin],
 ]
+
+console.log(coords)
 
 
 const init_style = 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=MaFnSq3YV246XmAmaMFo'

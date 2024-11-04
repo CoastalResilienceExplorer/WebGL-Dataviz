@@ -8,39 +8,20 @@ import quadVert from './shaders/quad.vert.glsl?raw';
 import screenFrag from './shaders/screen.frag.glsl?raw';
 import updateFrag from './shaders/update.frag.glsl?raw';
 
-import fs from 'fs'
 import windData from '../data/metadata_t0.json';
-// import img from '../data/img_t0.png';
-
-// const defaultRampColors = {
-//     0.0: '#3288bd',
-//     // 0.1: '#66c2a5',
-//     0.1: '#d53e4f'
-// };
-// const defaultRampColors = {
-//     0.0: '#3288bd00', // Hide 0 flow pixels
-//     0.01: '#3288bd00', // Hide 0 flow pixels
-//     0.1: '#66c2a5',
-//     0.2: '#abdda4',
-//     0.3: '#e6f598',
-//     0.4: '#fee08b',
-//     0.5: '#fdae61',
-//     0.6: '#f46d43',
-//     0.7: '#f46d43',
-//     0.8: '#f46d43',
-//     0.9: '#f46d43',
-//     1.0: '#d53e4f00' // Transparency HACK
-// };
 
 const defaultRampColors = {
     0.0: '#3288bd00', // Hide 0 flow pixels
-    // 0.05: '#3288bd', // Hide 0 flow pixels
+    0.01: '#3288bd00', // Hide 0 flow pixels
+    0.05: '#3288bd', // Hide 0 flow pixels
+    0.07: '#3288bd', // Hide 0 flow pixels
     0.1: '#66c2a5',
     0.2: '#e6f598',
     0.3: '#d53e4f',
     0.4: '#d53e4f',
     // 0.5: '#fdae61',
     // 0.6: '#d53e4f',
+    0.9: '#d53e4f00', // Transparency HACK
     1.0: '#d53e4f00' // Transparency HACK
 };  
 
@@ -67,7 +48,7 @@ export class WindGL {
         this.gl = gl;
 
         this.fadeOpacity = 0.9999999; // how fast the particle trails fade on each frame
-        this.speedFactor = 6.0; // how fast the particles move
+        this.speedFactor = 4.0; // how fast the particles move
         this.dropRate = 0.003; // how often the particles move to a random place
         this.dropRateBump = 0.001; // drop rate increase relative to individual particle speed
 
